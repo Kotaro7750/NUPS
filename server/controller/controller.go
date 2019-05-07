@@ -3,7 +3,6 @@ package controller
 import (
 	"database/sql"
 	"errors"
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -46,13 +45,29 @@ func (n *NupsCtr) ListKi(c *gin.Context) {
 
 //ListKouji is a function to list up all kouji of ki
 func (n *NupsCtr) ListKouji(c *gin.Context) {
+	ki, _ := strconv.Atoi(c.Param("ki"))
+	koujiList, err := model.KoujiAll(n.DB, ki)
+
+	if err != nil {
+		resp := errors.New(err.Error())
+		c.JSON(http.StatusInternalServerError, resp)
+		return
+	}
+	if len(koujiList) == 0 {
+		c.JSON(http.StatusOK, make([]*model.Kouji, 0))
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"result": koujiList,
+		"error":  nil,
+	})
 	return
 }
 
 //AddKi is a function to add new ki
 func (n *NupsCtr) AddKi(c *gin.Context) {
 	ki, _ := strconv.Atoi(c.Param("ki"))
-	fmt.Print(ki)
 	err := model.KiInsert(n.DB, ki)
 
 	if err != nil {
