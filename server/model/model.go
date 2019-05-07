@@ -25,3 +25,14 @@ func KiAll(db *sql.DB) ([]int, error) {
 	}
 	return kiList, nil
 }
+
+//KiInsert is a function to add new ki
+func KiInsert(db *sql.DB, ki int) error {
+	insert, err := db.Prepare("INSERT INTO ki(ki) VALUES(?)")
+	if err != nil {
+		return err
+	}
+	insert.Exec(ki)
+
+	return nil
+}

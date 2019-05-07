@@ -3,7 +3,9 @@ package controller
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 
@@ -44,34 +46,44 @@ func (n *NupsCtr) ListKi(c *gin.Context) {
 
 //ListKouji is a function to list up all kouji of ki
 func (n *NupsCtr) ListKouji(c *gin.Context) {
-	return 
+	return
 }
 
 //AddKi is a function to add new ki
 func (n *NupsCtr) AddKi(c *gin.Context) {
-	ki,err := model.KiInsert(n.DB)
+	ki, _ := strconv.Atoi(c.Param("ki"))
+	fmt.Print(ki)
+	err := model.KiInsert(n.DB, ki)
+
+	if err != nil {
+		resp := errors.New(err.Error())
+		c.JSON(http.StatusInternalServerError, resp)
+		return
+	}
+
+	c.JSON(http.StatusOK, gin.H{})
 }
 
 //GetKouji is a function to get kouji
 func (n *NupsCtr) GetKouji(c *gin.Context) {
-	return 
+	return
 
 }
 
 //UploadKouji is a function to upload kouji
 func (n *NupsCtr) UploadKouji(c *gin.Context) {
-	return 
+	return
 
 }
 
 //UpdateKouji is a function to update kouji
 func (n *NupsCtr) UpdateKouji(c *gin.Context) {
-	return 
+	return
 
 }
 
 //DeleteKouji is a function to delete kouji
 func (n *NupsCtr) DeleteKouji(c *gin.Context) {
-	return 
+	return
 
 }

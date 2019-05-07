@@ -17,21 +17,21 @@ func main() {
 	config.AllowOrigins = []string{"*"}
 	config.AllowHeaders = []string{"*"}
 
-	db, err := sql.Open("")
+	db, err := sql.Open("mysql", "root:root@([db]:3306)/NUPS")
 	if err != nil {
 		panic(err.Error())
 	}
 	defer db.Close()
 
-	userctr := &controller.UserCtr{DB: db}
+	userctr := &controller.NupsCtr{DB: db}
 
 	router.Use(cors.New(config))
-	router.GET("/",ListKi)
-	router.GET("/:ki",ListKouji)
-	router.POST("/:ki",AddKi)
-	router.GET("/:ki/:id",)
-	router.POST("/:ki/:id",UploadKouji)
-	router.UPDATE("/:ki/:id",UpdateKouji)
-	router.DELETE("/:ki/:id",DeleteKouji)
-	router.Run(":8080")
+	router.GET("/", userctr.ListKi)
+	router.GET("/:ki", userctr.ListKouji)
+	router.POST("/:ki", userctr.AddKi)
+	router.GET("/:ki/:id")
+	router.POST("/:ki/:id", userctr.UploadKouji)
+	router.PATCH("/:ki/:id", userctr.UpdateKouji)
+	router.DELETE("/:ki/:id", userctr.DeleteKouji)
+	router.Run(":8888")
 }
