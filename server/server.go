@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"os"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -11,6 +12,10 @@ import (
 )
 
 func main() {
+	if _,err := os.Stat("/kouji"); os.IsNotExist(err){
+		os.Mkdir("/kouji",0777)
+	}
+
 	router := gin.Default()
 
 	config := cors.DefaultConfig()

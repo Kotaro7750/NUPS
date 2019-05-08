@@ -1,0 +1,19 @@
+version: '3'
+services:
+  server:
+    depends_on:
+      - db
+    build: ./server
+    ports:
+      - '8888:8888'
+    volumes:
+      - ./server:/app
+  db:
+    build:  ./db
+    ports:
+      - '3306:3306'
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_USER: nups
+      MYSQL_PASSWORD: nups
+      MYSQL_DATABASE: NUPS

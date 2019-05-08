@@ -5,6 +5,8 @@ import (
 	"errors"
 	"net/http"
 	"strconv"
+	"fmt"
+	"os"
 
 	"github.com/gin-gonic/gin"
 
@@ -16,11 +18,6 @@ type NupsCtr struct {
 	DB *sql.DB
 }
 
-//Kouji is a structure of kouji
-type Kouji struct {
-	ID    int
-	Title string
-}
 
 //ListKi is a function to list up all ki
 func (n *NupsCtr) ListKi(c *gin.Context) {
@@ -68,7 +65,16 @@ func (n *NupsCtr) ListKouji(c *gin.Context) {
 //AddKi is a function to add new ki
 func (n *NupsCtr) AddKi(c *gin.Context) {
 	ki, _ := strconv.Atoi(c.Param("ki"))
-	err := model.KiInsert(n.DB, ki)
+
+	err := os.Mkdir("/kouji/" + c.Param("ki"),0777)
+
+	if err != nil {
+		resp := errors.New(err.Error())
+		c.JSON(http.StatusInternalServerError, resp)
+		return
+	}
+
+	err = model.KiInsert(n.DB, ki)
 
 	if err != nil {
 		resp := errors.New(err.Error())
@@ -77,18 +83,30 @@ func (n *NupsCtr) AddKi(c *gin.Context) {
 	}
 
 	c.JSON(http.StatusOK, gin.H{})
+	return
 }
 
 //GetKouji is a function to get kouji
 func (n *NupsCtr) GetKouji(c *gin.Context) {
-	return
+	//ki, _ := strconv.Atoi(c.Param("ki"))
+	//num,_ := strconv.Atoi(c.Param("id"))
 
+	c.File("/kouji/" + "pdf.pdf")
+
+	return
 }
 
 //UploadKouji is a function to upload kouji
 func (n *NupsCtr) UploadKouji(c *gin.Context) {
-	return
+	form,_ := c.MultipartForm()
+	files := form.File["kouji[]"]
 
+	for _, file := range files {
+		c.SaveUploadedFile(file, "/kouji/"+file.Filename)
+		fmt.Println(file.Filename)
+	}
+	c.JSON(http.StatusOK, gin.H{})
+	return
 }
 
 //UpdateKouji is a function to update kouji
