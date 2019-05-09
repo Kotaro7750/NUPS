@@ -1,1 +1,5 @@
 server/tmp/
+kouji/
+init/*.csv
+init/*.sql
+db/*.csv

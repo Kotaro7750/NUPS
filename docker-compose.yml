@@ -8,6 +8,7 @@ services:
       - '8888:8888'
     volumes:
       - ./server:/app
+      - ./kouji:/kouji
   db:
     build:  ./db
     ports:
